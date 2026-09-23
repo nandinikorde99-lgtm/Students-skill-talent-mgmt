@@ -1,32 +1,42 @@
-package module5_event_competition;
+package module2_profile_management;
 
-abstract class Event {
-    private int eventId;
-    private String title, date, venue;
-    public Event(int id, String title, String date, String venue) {
-        this.eventId=id; this.title=title; this.date=date; this.venue=venue;
+abstract class Profile {
+    private String studentId;
+    public Profile(String studentId) { this.studentId = studentId; }
+    public String getStudentId() { return studentId; }
+    public abstract void display();
+}
+
+class Student {
+    private String name;
+    private Profile profile;
+    public Student(String name, Profile profile) { this.name=name; this.profile=profile; }
+    public void showProfile() { System.out.println("Student: " + name); profile.display(); }
+}
+
+class AcademicDetails extends Profile {
+    private String course;
+    public AcademicDetails(String id, String course) { super(id); this.course=course; }
+    @Override public void display() { System.out.println("Course: " + course); }
+}
+
+class ContactDetails extends Profile {
+    private String phone;
+    public ContactDetails(String id, String phone) { super(id); this.phone=phone; }
+    @Override public void display() { System.out.println("Phone: " + phone); }
+}
+
+class ProfileManager {
+    public void updateProfile(Profile profile) {
+        System.out.println("Profile updated for: " + profile.getStudentId());
     }
-    public String getTitle(){ return title; }
-    public abstract void scheduleEvent();
 }
-
-class Competition extends Event {
-    public Competition(int id,String t,String d,String v){super(id,t,d,v);}
-    @Override public void scheduleEvent(){System.out.println("Competition scheduled: "+getTitle());}
-}
-class Workshop extends Event {
-    public Workshop(int id,String t,String d,String v){super(id,t,d,v);}
-    @Override public void scheduleEvent(){System.out.println("Workshop scheduled: "+getTitle());}
-}
-class EventRegistration { public void register(Event e){System.out.println("Registered for: "+e.getTitle());} }
-class EventManager { public void schedule(Event e){e.scheduleEvent();} }
-class Notification { public void send(String msg){System.out.println("Notification: "+msg);} }
 
 public class Main {
     public static void main(String[] args) {
-        Event e = new Competition(1,"Coding Competition","20-09-2026","College Lab");
-        new EventManager().schedule(e);
-        new EventRegistration().register(e);
-        new Notification().send("Registration confirmed");
+        Profile academic = new AcademicDetails("BT250123DS", "Data Science");
+        Student s = new Student("Huzeifa", academic);
+        s.showProfile();
+        new ProfileManager().updateProfile(academic);
     }
 }
