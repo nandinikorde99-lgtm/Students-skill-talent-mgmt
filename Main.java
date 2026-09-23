@@ -1,53 +1,34 @@
-package module1_login_registration;
+package module3_skill_management;
 
-abstract class User {
-    private int userId;
-    private String name, email, password;
-
-    public User(int userId, String name, String email, String password) {
-        this.userId = userId; this.name = name; this.email = email; this.password = password;
+abstract class Skill {
+    private int skillId;
+    private String name, level, category;
+    public Skill(int id, String name, String level, String category) {
+        this.skillId=id; this.name=name; this.level=level; this.category=category;
     }
     public String getName() { return name; }
-    public String getEmail() { return email; }
-    public boolean checkPassword(String p) { return password.equals(p); }
-    public abstract void login();
+    public abstract void evaluateSkill();
 }
 
-class Student extends User {
-    public Student(int id, String n, String e, String p) { super(id,n,e,p); }
-    @Override public void login() { System.out.println("Student login successful: " + getName()); }
+class TechnicalSkill extends Skill {
+    public TechnicalSkill(int id, String n, String l, String c) { super(id,n,l,c); }
+    @Override public void evaluateSkill() { System.out.println("Technical skill evaluated: " + getName()); }
 }
 
-class Admin extends User {
-    public Admin(int id, String n, String e, String p) { super(id,n,e,p); }
-    @Override public void login() { System.out.println("Admin login successful: " + getName()); }
+class SoftSkill extends Skill {
+    public SoftSkill(int id, String n, String l, String c) { super(id,n,l,c); }
+    @Override public void evaluateSkill() { System.out.println("Soft skill evaluated: " + getName()); }
 }
 
-class RegistrationManager {
-    public User registerStudent(int id, String n, String e, String p) {
-        return new Student(id,n,e,p);
-    }
-}
-
-class LoginManager {
-    public void login(User user) { user.login(); }
-}
-
-class AuthenticationService {
-    public boolean authenticate(User user, String password) {
-        return user.checkPassword(password);
-    }
-}
+class SkillCategory { private String name; public SkillCategory(String n){name=n;} }
+class SkillAssessment { public void assess(Skill s){ s.evaluateSkill(); } }
+class SkillManager { public void addSkill(Skill s){ System.out.println("Skill added: "+s.getName()); } }
 
 public class Main {
     public static void main(String[] args) {
-        RegistrationManager rm = new RegistrationManager();
-        User student = rm.registerStudent(1, "Huzeifa", "student@example.com", "1234");
-        AuthenticationService auth = new AuthenticationService();
-        if (auth.authenticate(student, "1234")) {
-            new LoginManager().login(student);
-        } else {
-            System.out.println("Invalid password");
-        }
+        Skill technical = new TechnicalSkill(1, "Java", "Intermediate", "Programming");
+        SkillManager manager = new SkillManager();
+        manager.addSkill(technical);
+        new SkillAssessment().assess(technical);
     }
 }
