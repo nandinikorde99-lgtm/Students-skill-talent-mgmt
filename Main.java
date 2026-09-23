@@ -1,42 +1,53 @@
-package module2_profile_management;
+package module1_login_registration;
 
-abstract class Profile {
-    private String studentId;
-    public Profile(String studentId) { this.studentId = studentId; }
-    public String getStudentId() { return studentId; }
-    public abstract void display();
+abstract class User {
+    private int userId;
+    private String name, email, password;
+
+    public User(int userId, String name, String email, String password) {
+        this.userId = userId; this.name = name; this.email = email; this.password = password;
+    }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public boolean checkPassword(String p) { return password.equals(p); }
+    public abstract void login();
 }
 
-class Student {
-    private String name;
-    private Profile profile;
-    public Student(String name, Profile profile) { this.name=name; this.profile=profile; }
-    public void showProfile() { System.out.println("Student: " + name); profile.display(); }
+class Student extends User {
+    public Student(int id, String n, String e, String p) { super(id,n,e,p); }
+    @Override public void login() { System.out.println("Student login successful: " + getName()); }
 }
 
-class AcademicDetails extends Profile {
-    private String course;
-    public AcademicDetails(String id, String course) { super(id); this.course=course; }
-    @Override public void display() { System.out.println("Course: " + course); }
+class Admin extends User {
+    public Admin(int id, String n, String e, String p) { super(id,n,e,p); }
+    @Override public void login() { System.out.println("Admin login successful: " + getName()); }
 }
 
-class ContactDetails extends Profile {
-    private String phone;
-    public ContactDetails(String id, String phone) { super(id); this.phone=phone; }
-    @Override public void display() { System.out.println("Phone: " + phone); }
+class RegistrationManager {
+    public User registerStudent(int id, String n, String e, String p) {
+        return new Student(id,n,e,p);
+    }
 }
 
-class ProfileManager {
-    public void updateProfile(Profile profile) {
-        System.out.println("Profile updated for: " + profile.getStudentId());
+class LoginManager {
+    public void login(User user) { user.login(); }
+}
+
+class AuthenticationService {
+    public boolean authenticate(User user, String password) {
+        return user.checkPassword(password);
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Profile academic = new AcademicDetails("BT250123DS", "Data Science");
-        Student s = new Student("Huzeifa", academic);
-        s.showProfile();
-        new ProfileManager().updateProfile(academic);
+        RegistrationManager rm = new RegistrationManager();
+        User student = rm.registerStudent(1, "Huzeifa", "student@example.com", "1234");
+        AuthenticationService auth = new AuthenticationService();
+        if (auth.authenticate(student, "1234")) {
+            new LoginManager().login(student);
+        } else {
+            System.out.println("Invalid password");
+        }
     }
 }
